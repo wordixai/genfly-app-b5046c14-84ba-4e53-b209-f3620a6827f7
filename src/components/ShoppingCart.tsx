@@ -121,10 +121,8 @@ export const ShoppingCart = ({ isOpen, onClose }: ShoppingCartProps) => {
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
                           index <= checkoutStep ? "bg-[#6f4e37] text-white" : "bg-gray-200 text-gray-600"
                         }`}
-                        animate={{ 
-                          scale: index === checkoutStep ? [1, 1.1, 1] : 1,
-                          transition: { duration: 0.5 }
-                        }}
+                        animate={index === checkoutStep ? { scale: 1.1 } : { scale: 1 }}
+                        transition={{ duration: 0.3 }}
                       >
                         {index + 1}
                       </motion.div>

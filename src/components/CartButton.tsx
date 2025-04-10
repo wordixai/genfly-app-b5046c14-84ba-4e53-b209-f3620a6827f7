@@ -34,7 +34,7 @@ export const CartButton = () => {
               className="absolute -top-1 -right-1 bg-[#6f4e37] text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ 
-                scale: isAnimating ? [1, 1.2, 1] : 1, 
+                scale: isAnimating ? 1.2 : 1, 
                 opacity: 1 
               }}
               exit={{ scale: 0.8, opacity: 0 }}
