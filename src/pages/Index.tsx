@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, useScroll, AnimatePresence } from "framer-motion";
-import { Menu, Coffee, Clock, MapPin, Phone, Instagram, Facebook, Twitter, ArrowUp, Quote } from "lucide-react";
+import { Coffee, Clock, MapPin, Phone, Instagram, Facebook, Twitter, ArrowUp, Quote } from "lucide-react";
+import { Navbar } from "../components/Navbar";
 import { AnimatedSection } from "../components/AnimatedSection";
 import { ParallaxImage } from "../components/ParallaxImage";
 import { StaggeredText } from "../components/StaggeredText";
 import { ScrollProgress } from "../components/ScrollProgress";
 import { HoverCard } from "../components/HoverCard";
 import { ReviewCarousel } from "../components/ReviewCarousel";
+import { AddToCartButton } from "../components/AddToCartButton";
+import { menuItems } from "../data/menu-items";
 
 const Index = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const { scrollY } = useScroll();
 
@@ -25,91 +28,20 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Get featured items (one from each category)
+  const featuredItems = [
+    menuItems.find(item => item.category === "coffee" && item.badge === "Popular"),
+    menuItems.find(item => item.category === "pastries" && item.badge === "Fresh"),
+    menuItems.find(item => item.category === "food" && item.badge === "Popular")
+  ].filter(Boolean);
+
   return (
     <div className="min-h-screen bg-[#f8f5f2] text-[#2d2a27]">
       {/* Scroll Progress Indicator */}
       <ScrollProgress />
       
       {/* Navigation */}
-      <nav className="fixed w-full bg-[#f8f5f2]/90 backdrop-blur-sm z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <motion.a 
-            href="#" 
-            className="text-2xl font-bold text-[#6f4e37]"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Aroma Cafe
-          </motion.a>
-          
-          <motion.div 
-            className="hidden md:flex space-x-8"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, staggerChildren: 0.1, delayChildren: 0.2 }}
-          >
-            {["about", "menu", "reviews", "location", "contact"].map((item, index) => (
-              <motion.a 
-                key={item}
-                href={`#${item}`} 
-                className="hover:text-[#6f4e37] transition-colors relative group"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 * index }}
-                whileHover={{ scale: 1.05 }}
-              >
-                {item.charAt(0).toUpperCase() + item.slice(1)}
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#6f4e37] group-hover:w-full transition-all duration-300"
-                  layoutId={`underline-${item}`}
-                />
-              </motion.a>
-            ))}
-          </motion.div>
-          
-          <motion.button 
-            className="md:hidden text-[#6f4e37]"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Menu size={24} />
-          </motion.button>
-        </div>
-        
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div 
-              className="md:hidden bg-white shadow-lg"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                {["about", "menu", "reviews", "location", "contact"].map((item, index) => (
-                  <motion.a 
-                    key={item}
-                    href={`#${item}`} 
-                    className="hover:text-[#6f4e37] transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.05 * index }}
-                    whileHover={{ x: 5 }}
-                  >
-                    {item.charAt(0).toUpperCase() + item.slice(1)}
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
+      <Navbar />
       
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -143,18 +75,33 @@ const Index = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <motion.a 
-              href="#menu" 
-              className="bg-[#6f4e37] text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-[#5d4130] transition-colors inline-block"
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
-              }}
-              whileTap={{ scale: 0.98 }}
-            >
-              View Menu
-            </motion.a>
+            <Link to="/menu">
+              <motion.button 
+                className="bg-[#6f4e37] text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-[#5d4130] transition-colors inline-block"
+                whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                View Menu
+              </motion.button>
+            </Link>
+            
+            <a href="#featured">
+              <motion.button 
+                className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-white/10 transition-colors inline-block"
+                whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Featured Items
+              </motion.button>
+            </a>
           </motion.div>
           
           <motion.div 
@@ -187,8 +134,65 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Featured Items Section */}
+      <section id="featured" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <AnimatedSection>
+            <h2 className="text-4xl font-bold mb-12 text-center text-[#6f4e37]">Featured Items</h2>
+          </AnimatedSection>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {featuredItems.map((item, index) => (
+              item && (
+                <AnimatedSection key={item.id} delay={0.2 * index}>
+                  <HoverCard className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col">
+                    <div className="relative">
+                      <img 
+                        src={item.image} 
+                        alt={item.name} 
+                        className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                      {item.badge && (
+                        <div className="absolute top-2 right-2 bg-[#6f4e37] text-white text-xs px-2 py-1 rounded-full">
+                          {item.badge}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-xl font-bold text-[#6f4e37]">{item.name}</h3>
+                        <span className="font-bold">${item.price.toFixed(2)}</span>
+                      </div>
+                      <p className="text-gray-700 mb-4 flex-grow">{item.description}</p>
+                      <AddToCartButton item={item} />
+                    </div>
+                  </HoverCard>
+                </AnimatedSection>
+              )
+            ))}
+          </div>
+          
+          <AnimatedSection delay={0.6}>
+            <div className="mt-12 text-center">
+              <Link to="/menu">
+                <motion.button 
+                  className="border-2 border-[#6f4e37] text-[#6f4e37] px-8 py-3 rounded-full text-lg font-medium hover:bg-[#6f4e37] hover:text-white transition-colors inline-block"
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  View Full Menu
+                </motion.button>
+              </Link>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+      
       {/* About Section */}
-      <section id="about" className="py-20 bg-white">
+      <section id="about" className="py-20 bg-[#f8f5f2]">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-12">
             <AnimatedSection className="md:w-1/2" direction="left">
@@ -236,63 +240,6 @@ const Index = () => {
               </AnimatedSection>
             </div>
           </div>
-        </div>
-      </section>
-      
-      {/* Menu Section */}
-      <section id="menu" className="py-20 bg-[#f8f5f2]">
-        <div className="container mx-auto px-4">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold mb-12 text-center text-[#6f4e37]">Our Menu</h2>
-          </AnimatedSection>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {menuCategories.map((category, index) => (
-              <AnimatedSection key={index} delay={0.2 * index}>
-                <HoverCard className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <img 
-                    src={category.image} 
-                    alt={category.name} 
-                    className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
-                  />
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-4 text-[#6f4e37]">{category.name}</h3>
-                    <ul className="space-y-2">
-                      {category.items.map((item, idx) => (
-                        <motion.li 
-                          key={idx} 
-                          className="flex justify-between"
-                          initial={{ opacity: 0, x: -10 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.1 * idx }}
-                          viewport={{ once: true }}
-                        >
-                          <span>{item.name}</span>
-                          <span className="font-medium">${item.price}</span>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </div>
-                </HoverCard>
-              </AnimatedSection>
-            ))}
-          </div>
-          
-          <AnimatedSection delay={0.6}>
-            <div className="mt-12 text-center">
-              <motion.a 
-                href="#" 
-                className="border-2 border-[#6f4e37] text-[#6f4e37] px-8 py-3 rounded-full text-lg font-medium hover:bg-[#6f4e37] hover:text-white transition-colors inline-block"
-                whileHover={{ 
-                  scale: 1.05,
-                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Full Menu
-              </motion.a>
-            </div>
-          </AnimatedSection>
         </div>
       </section>
       
@@ -506,43 +453,6 @@ const Index = () => {
     </div>
   );
 };
-
-// Menu data
-const menuCategories = [
-  {
-    name: "Coffee & Espresso",
-    image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    items: [
-      { name: "Espresso", price: 3.50 },
-      { name: "Americano", price: 4.00 },
-      { name: "Cappuccino", price: 4.50 },
-      { name: "Latte", price: 4.75 },
-      { name: "Mocha", price: 5.25 }
-    ]
-  },
-  {
-    name: "Pastries & Desserts",
-    image: "https://images.unsplash.com/photo-1517433367423-c7e5b0f35086?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    items: [
-      { name: "Croissant", price: 3.75 },
-      { name: "Chocolate Muffin", price: 4.25 },
-      { name: "Cinnamon Roll", price: 4.50 },
-      { name: "Cheesecake", price: 5.50 },
-      { name: "Apple Pie", price: 5.25 }
-    ]
-  },
-  {
-    name: "Breakfast & Lunch",
-    image: "https://images.unsplash.com/photo-1525351484163-7529414344d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    items: [
-      { name: "Avocado Toast", price: 8.50 },
-      { name: "Breakfast Sandwich", price: 9.25 },
-      { name: "Quiche of the Day", price: 7.75 },
-      { name: "Chicken Panini", price: 10.50 },
-      { name: "Vegetable Wrap", price: 9.75 }
-    ]
-  }
-];
 
 // Customer reviews data
 const customerReviews = [
