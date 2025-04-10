@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, useScroll, AnimatePresence } from "framer-motion";
-import { Menu, Coffee, Clock, MapPin, Phone, Instagram, Facebook, Twitter, ArrowUp } from "lucide-react";
+import { Menu, Coffee, Clock, MapPin, Phone, Instagram, Facebook, Twitter, ArrowUp, Quote } from "lucide-react";
 import { AnimatedSection } from "../components/AnimatedSection";
 import { ParallaxImage } from "../components/ParallaxImage";
 import { StaggeredText } from "../components/StaggeredText";
 import { ScrollProgress } from "../components/ScrollProgress";
 import { HoverCard } from "../components/HoverCard";
+import { ReviewCarousel } from "../components/ReviewCarousel";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,7 +49,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, staggerChildren: 0.1, delayChildren: 0.2 }}
           >
-            {["about", "menu", "location", "contact"].map((item, index) => (
+            {["about", "menu", "reviews", "location", "contact"].map((item, index) => (
               <motion.a 
                 key={item}
                 href={`#${item}`} 
@@ -90,7 +91,7 @@ const Index = () => {
               transition={{ duration: 0.3 }}
             >
               <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                {["about", "menu", "location", "contact"].map((item, index) => (
+                {["about", "menu", "reviews", "location", "contact"].map((item, index) => (
                   <motion.a 
                     key={item}
                     href={`#${item}`} 
@@ -295,8 +296,46 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Reviews Section */}
+      <section id="reviews" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <AnimatedSection>
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4 text-[#6f4e37]">Customer Reviews</h2>
+              <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+                Don't just take our word for it. Here's what our customers have to say about their Aroma Cafe experience.
+              </p>
+            </div>
+          </AnimatedSection>
+          
+          <AnimatedSection delay={0.3}>
+            <div className="relative">
+              <motion.div 
+                className="absolute -top-16 -left-8 opacity-10 text-[#6f4e37]"
+                initial={{ opacity: 0, rotate: -20 }}
+                animate={{ opacity: 0.1, rotate: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <Quote size={120} />
+              </motion.div>
+              
+              <ReviewCarousel reviews={customerReviews} />
+              
+              <motion.div 
+                className="absolute -bottom-16 -right-8 opacity-10 text-[#6f4e37] rotate-180"
+                initial={{ opacity: 0, rotate: 200 }}
+                animate={{ opacity: 0.1, rotate: 180 }}
+                transition={{ duration: 1 }}
+              >
+                <Quote size={120} />
+              </motion.div>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+      
       {/* Location Section */}
-      <section id="location" className="py-20 bg-white">
+      <section id="location" className="py-20 bg-[#f8f5f2]">
         <div className="container mx-auto px-4">
           <AnimatedSection>
             <h2 className="text-4xl font-bold mb-12 text-center text-[#6f4e37]">Visit Us</h2>
@@ -305,7 +344,7 @@ const Index = () => {
           <div className="flex flex-col md:flex-row items-center gap-12">
             <AnimatedSection className="md:w-1/2" direction="left">
               <motion.div 
-                className="bg-[#f8f5f2] p-8 rounded-lg"
+                className="bg-white p-8 rounded-lg"
                 whileHover={{ boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
               >
                 <h3 className="text-2xl font-bold mb-6">Hours & Location</h3>
@@ -502,6 +541,50 @@ const menuCategories = [
       { name: "Chicken Panini", price: 10.50 },
       { name: "Vegetable Wrap", price: 9.75 }
     ]
+  }
+];
+
+// Customer reviews data
+const customerReviews = [
+  {
+    id: 1,
+    name: "Emily Johnson",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80",
+    rating: 5,
+    date: "June 12, 2023",
+    text: "The atmosphere here is so inviting! I love spending my mornings working remotely from Aroma Cafe. Their cappuccino is absolutely perfect - creamy with just the right amount of foam. The staff remembers my order and always greets me with a smile."
+  },
+  {
+    id: 2,
+    name: "Michael Chen",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80",
+    rating: 4,
+    date: "May 28, 2023",
+    text: "Aroma Cafe has become my go-to spot for business meetings. The quiet ambiance and reliable Wi-Fi make it perfect for productivity. Their breakfast sandwich is a must-try - the homemade bread makes all the difference. Only wish they had more savory options."
+  },
+  {
+    id: 3,
+    name: "Sophia Martinez",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80",
+    rating: 5,
+    date: "July 3, 2023",
+    text: "I can't say enough good things about the pastries here! The chocolate croissants are flaky perfection, and their seasonal fruit tarts are always a delight. I've tried to recreate them at home but nothing compares. This place is a gem in the neighborhood."
+  },
+  {
+    id: 4,
+    name: "David Wilson",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80",
+    rating: 5,
+    date: "April 15, 2023",
+    text: "As a coffee enthusiast, I'm quite picky about my espresso. Aroma Cafe consistently delivers exceptional quality. Their single-origin offerings rotate regularly, and the baristas are knowledgeable about the flavor profiles. It's clear they take their craft seriously."
+  },
+  {
+    id: 5,
+    name: "Olivia Kim",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80",
+    rating: 4,
+    date: "June 30, 2023",
+    text: "The lunch menu here is surprisingly good for a cafe! I had the vegetable wrap with their homemade hummus, and it was fresh and flavorful. The outdoor seating area is lovely on sunny days. Service can be a bit slow during peak hours, but the quality makes up for it."
   }
 ];
 
