@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { CartItemType } from "../types/cart";
 
@@ -11,6 +11,15 @@ interface CartItemProps {
 
 export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  const handleRemove = () => {
+    setIsRemoving(true);
+    // Small delay to allow animation to play
+    setTimeout(() => {
+      onRemove(item.id);
+    }, 300);
+  };
 
   return (
     <motion.div 
@@ -21,13 +30,35 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
       transition={{ duration: 0.3 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
+      layout
     >
+      <AnimatePresence>
+        {isRemoving && (
+          <motion.div 
+            className="absolute inset-0 bg-red-500/10 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.span 
+              className="text-red-500 font-medium"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+            >
+              Removing...
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-md overflow-hidden">
         {item.image ? (
-          <img 
+          <motion.img 
             src={item.image} 
             alt={item.name} 
             className="w-full h-full object-cover"
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3 }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-[#6f4e37]/10 text-[#6f4e37]">
@@ -43,19 +74,27 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
       
       <div className="flex items-center">
         <motion.button
-          className="p-1 text-gray-500 hover:text-[#6f4e37]"
+          className={`p-1 rounded-full ${item.quantity <= 1 ? 'text-gray-300' : 'text-gray-500 hover:text-[#6f4e37] hover:bg-[#6f4e37]/10'}`}
           onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: item.quantity <= 1 ? 1 : 1.1 }}
+          whileTap={{ scale: item.quantity <= 1 ? 1 : 0.9 }}
           disabled={item.quantity <= 1}
         >
           <Minus size={16} />
         </motion.button>
         
-        <span className="mx-2 w-8 text-center">{item.quantity}</span>
+        <motion.span 
+          className="mx-2 w-8 text-center font-medium"
+          key={item.quantity}
+          initial={{ scale: 1.2, color: "#6f4e37" }}
+          animate={{ scale: 1, color: "#374151" }}
+          transition={{ duration: 0.3 }}
+        >
+          {item.quantity}
+        </motion.span>
         
         <motion.button
-          className="p-1 text-gray-500 hover:text-[#6f4e37]"
+          className="p-1 rounded-full text-gray-500 hover:text-[#6f4e37] hover:bg-[#6f4e37]/10"
           onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -69,8 +108,8 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
       </div>
       
       <motion.button
-        className="ml-4 p-1 text-gray-400 hover:text-red-500"
-        onClick={() => onRemove(item.id)}
+        className="ml-4 p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50"
+        onClick={handleRemove}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         animate={{ opacity: isHovered ? 1 : 0.5 }}

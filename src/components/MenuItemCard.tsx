@@ -43,7 +43,7 @@ export const MenuItemCard = ({ item }: MenuItemCardProps) => {
           <p className="text-sm text-gray-600 mb-4">{item.description}</p>
         )}
         
-        <AddToCartButton item={item} className="w-full mt-2" />
+        <AddToCartButton item={item} className="w-full mt-2" showQuantity={true} />
       </div>
     </motion.div>
   );
